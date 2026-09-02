@@ -1,0 +1,28 @@
+name: CI
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  cask:
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Audit every cask
+        run: |
+          set -euo pipefail
+
+          dir="$(brew --repository)/Library/Taps/${GITHUB_REPOSITORY}"
+          tap="${GITHUB_REPOSITORY%%/*}/${GITHUB_REPOSITORY##*/homebrew-}"
+          mkdir -p "$(dirname "${dir}")"
+          ln -s "${GITHUB_WORKSPACE}" "${dir}"
+
+          for f in Casks/*.rb; do
+            brew audit --cask --online "${tap}/$(basename "${f}" .rb)"
+          done

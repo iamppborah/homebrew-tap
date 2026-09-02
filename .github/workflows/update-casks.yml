@@ -1,0 +1,57 @@
+name: Update casks
+
+on:
+  schedule:
+    - cron: "30 2 * * 6"   # Saturdays 02:30 UTC = 08:00 IST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        include:
+          - cask: pomotroid
+            repo: Splode/pomotroid
+            asset: Pomotroid_{version}_universal.dmg
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Bump ${{ matrix.cask }}
+        env:
+          CASK: ${{ matrix.cask }}
+          REPO: ${{ matrix.repo }}
+          ASSET: ${{ matrix.asset }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          file="Casks/${CASK}.rb"
+
+          tag="$(curl -fsSL -H "Authorization: Bearer ${GH_TOKEN}" \
+            "https://api.github.com/repos/${REPO}/releases/latest" | jq -r .tag_name)"
+          version="${tag#v}"
+          pinned="$(grep -m1 '^  version "' "${file}" | cut -d'"' -f2)"
+          [ "${version}" = "${pinned}" ] && { echo "${CASK} ${version}: up to date"; exit 0; }
+
+          sha="$(curl -fsSL "https://github.com/${REPO}/releases/download/${tag}/${ASSET//\{version\}/${version}}" \
+            | sha256sum | cut -d' ' -f1)"
+          echo "${CASK} ${version} ${sha}"
+
+          sed -i "s|^  version \".*\"|  version \"${version}\"|" "${file}"
+          sed -i "s|^  sha256 \".*\"|  sha256 \"${sha}\"|" "${file}"
+          ruby -c "${file}"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "${CASK} ${version}" -m "${pinned} -> ${version}
+
+          sha256 ${sha}
+          https://github.com/${REPO}/releases/tag/${tag}"
+          git pull --rebase --autostash
+          git push

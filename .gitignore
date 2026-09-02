@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+.AppleDouble
+.Spotlight-V100
+.Trashes
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Cask test artifacts. CI checksums the dmg in $RUNNER_TEMP, not here, but
+# verifying a sha256 by hand locally is easy to do inside the repo by mistake.
+*.dmg
+*.pkg
+*.zip
+*.tar.gz
