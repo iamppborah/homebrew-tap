@@ -24,7 +24,7 @@ install.
 | --- | --- | --- |
 | `pomotroid` | [Splode/pomotroid](https://github.com/Splode/pomotroid) | Simple and visually-pleasing Pomodoro timer |
 | `r2` | [dickwu/r2](https://github.com/dickwu/r2) | Free open-source Cloudflare R2 desktop client and S3 GUI |
-| `tinycast` | [abue-ammar/tinycast](https://github.com/abue-ammar/tinycast) | Tiny, fully native launcher, hotkeys, and clipboard history |
+| `tinycast` | [abue-ammar/tinycast](https://github.com/abue-ammar/tinycast) | Tiny, fully native macOS launcher, hotkeys, and clipboard history. |
 
 ## Security
 
