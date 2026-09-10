@@ -13,7 +13,6 @@ jobs:
   bump:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1
       fail-fast: false
       matrix:
         include:
@@ -29,18 +28,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-        with:
-          # Events raised by the default GITHUB_TOKEN don't start workflow runs, so a PR
-          # opened with it lands with ci.yml sitting in "Approve and run". Set a BUMP_TOKEN
-          # secret (a PAT with contents + pull-requests write) and the audit runs on its own.
-          token: ${{ secrets.BUMP_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Bump ${{ matrix.cask }}
         env:
           CASK: ${{ matrix.cask }}
           REPO: ${{ matrix.repo }}
           ASSET: ${{ matrix.asset }}
-          GH_TOKEN: ${{ secrets.BUMP_TOKEN || secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           file="Casks/${CASK}.rb"
@@ -51,11 +45,9 @@ jobs:
           pinned="$(grep -m1 '^  version "' "${file}" | cut -d'"' -f2)"
           [ "${version}" = "${pinned}" ] && { echo "${CASK} ${version}: up to date"; exit 0; }
 
-          # One branch per cask per version, so a rerun before you merge is a no-op
-          # rather than a second PR for the same bump.
           branch="bump/${CASK}-${version}"
-          if git ls-remote --exit-code --heads origin "${branch}" >/dev/null 2>&1; then
-            echo "${branch} already pushed; leaving the open PR alone"
+          if gh pr list --head "${branch}" --state open --json number --jq '.[].number' | grep -q .; then
+            echo "PR already open for ${branch}"
             exit 0
           fi
 
@@ -70,18 +62,11 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git switch -c "${branch}"
-          git commit -am "${CASK} ${version}" -m "${pinned} -> ${version}
-
-          sha256 ${sha}
-          https://github.com/${REPO}/releases/tag/${tag}"
-          git push -u origin "${branch}"
+          git commit -am "${CASK} ${version}" \
+            -m "${pinned} -> ${version} — https://github.com/${REPO}/releases/tag/${tag}"
+          git push --force origin "${branch}"
 
           gh pr create \
             --base main \
-            --head "${branch}" \
             --title "${CASK} ${version}" \
-            --body "Bumps \`${CASK}\` from \`${pinned}\` to \`${version}\`.
-
-          sha256 \`${sha}\`
-
-          Upstream release: https://github.com/${REPO}/releases/tag/${tag}"
+            --body "${pinned} -> ${version} — https://github.com/${REPO}/releases/tag/${tag}"
