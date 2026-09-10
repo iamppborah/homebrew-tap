@@ -16,9 +16,8 @@ cask "pomotroid" do
 
   app "Pomotroid.app"
 
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-d", "-r", "com.apple.quarantine", "#{appdir}/Pomotroid.app"]
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-d", "-r", "com.apple.quarantine", "{{appdir}}/Pomotroid.app"]
   end
 
   zap trash: [

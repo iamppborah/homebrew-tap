@@ -17,9 +17,8 @@ cask "r2" do
 
   app "r2.app"
 
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-d", "-r", "com.apple.quarantine", "#{appdir}/r2.app"]
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-d", "-r", "com.apple.quarantine", "{{appdir}}/r2.app"]
   end
 
   zap trash: [
