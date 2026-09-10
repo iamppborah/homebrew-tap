@@ -19,6 +19,9 @@ jobs:
           - cask: pomotroid
             repo: Splode/pomotroid
             asset: Pomotroid_{version}_universal.dmg
+          - cask: r2
+            repo: dickwu/r2
+            asset: r2_{version}_aarch64.dmg
 
     steps:
       - uses: actions/checkout@v7

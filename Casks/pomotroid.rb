@@ -4,8 +4,8 @@ cask "pomotroid" do
 
   url "https://github.com/Splode/pomotroid/releases/download/v#{version}/Pomotroid_#{version}_universal.dmg"
   name "Pomotroid"
-  desc "Timer application"
-  homepage "https://github.com/Splode/pomotroid"
+  desc "Simple and visually-pleasing Pomodoro timer"
+  homepage "https://pomotroid.app"
 
   livecheck do
     url :url
