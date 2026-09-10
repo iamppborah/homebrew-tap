@@ -20,9 +20,11 @@ install.
 
 ## Casks
 
-| Cask | Upstream | Why it's here |
+| Cask | Upstream | Description |
 | --- | --- | --- |
-| `pomotroid` | [Splode/pomotroid](https://github.com/Splode/pomotroid) | Removed from homebrew-cask on 2026-09-01 for `:fails_gatekeeper_check` |
+| `pomotroid` | [Splode/pomotroid](https://github.com/Splode/pomotroid) | Simple and visually-pleasing Pomodoro timer |
+| `r2` | [dickwu/r2](https://github.com/dickwu/r2) | Free open-source Cloudflare R2 desktop client and S3 GUI |
+| `tinycast` | [abue-ammar/tinycast](https://github.com/abue-ammar/tinycast) | Tiny, fully native launcher, hotkeys, and clipboard history |
 
 ## Security
 
@@ -46,14 +48,6 @@ brew uninstall --cask <cask>          # remove the app
 brew uninstall --cask --zap <cask>    # also the cask's zap paths
 brew untap iamppborah/tap             # remove the tap
 ```
-
-## Cask notes
-
-### pomotroid
-
-Signed only *ad-hoc* — no Developer ID, so it cannot be notarized and Gatekeeper
-refuses it with `no usable signature`. The cask strips the quarantine flag as
-described above.
 
 ## Licence
 
