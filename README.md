@@ -1,8 +1,7 @@
 # homebrew-tap
 
 A personal [Homebrew](https://brew.sh) tap. It holds casks for macOS apps that
-are not in `homebrew-cask` — usually because they were removed from it, or were
-never accepted in the first place.
+are not in `homebrew-cask`.
 
 Each cask is pinned to a `sha256`, and a weekly GitHub Action bumps the version
 and hash when upstream publishes a release.
@@ -28,8 +27,8 @@ install.
 
 ## Security
 
-Casks here may strip `com.apple.quarantine`, which **skips** Apple's malware
-check rather than passing it.
+Every cask here strips `com.apple.quarantine` in a `postflight_steps` stanza,
+which **skips** Apple's malware check rather than passing it.
 
 macOS tags anything downloaded with a hidden `com.apple.quarantine` flag, and
 Gatekeeper only inspects files that carry it. A cask that deletes the flag after
