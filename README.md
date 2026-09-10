@@ -3,8 +3,9 @@
 A personal [Homebrew](https://brew.sh) tap. It holds casks for macOS apps that
 are not in `homebrew-cask`.
 
-Each cask is pinned to a `sha256`, and a weekly GitHub Action bumps the version
-and hash when upstream publishes a release.
+Each cask is pinned to a `sha256`. When upstream publishes a release, a weekly
+GitHub Action opens a pull request with the new version and hash — nothing here
+changes until it is merged.
 
 ## Install
 
