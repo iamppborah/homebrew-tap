@@ -7,6 +7,20 @@ Each cask is pinned to a `sha256`. When upstream publishes a release, a weekly
 GitHub Action opens a pull request with the new version and hash — nothing here
 changes until it is merged.
 
+## Security
+
+Every cask here strips `com.apple.quarantine` in a `postflight_steps` stanza.
+macOS tags anything downloaded with that flag and Gatekeeper only checks files
+that carry it, so deleting it means the check never runs.
+
+These apps are ad-hoc or self-signed, so Gatekeeper's answer is a flat no. The
+point of stripping the flag is that the app opens on the first try — no
+"damaged, move to Bin", no **Open Anyway** button to go hunting for, because
+there isn't one.
+
+The cost is trusting the upstream project instead of Apple; the pinned `sha256`
+fixes which bytes you get, not what they do.
+
 ## Install
 
 ```sh
@@ -25,21 +39,6 @@ install.
 | `pomotroid` | [Splode/pomotroid](https://github.com/Splode/pomotroid) | Simple and visually-pleasing Pomodoro timer |
 | `r2` | [dickwu/r2](https://github.com/dickwu/r2) | Free open-source Cloudflare R2 desktop client and S3 GUI |
 | `tinycast` | [abue-ammar/tinycast](https://github.com/abue-ammar/tinycast) | Tiny, fully native macOS launcher, hotkeys, and clipboard history. |
-
-## Security
-
-Every cask here strips `com.apple.quarantine` in a `postflight_steps` stanza,
-which **skips** Apple's malware check rather than passing it.
-
-macOS tags anything downloaded with a hidden `com.apple.quarantine` flag, and
-Gatekeeper only inspects files that carry it. A cask that deletes the flag after
-install leaves the app looking as if it had always been local, so the check
-never runs.
-
-That means trusting the upstream project instead of Apple. The pinned `sha256`
-fixes which bytes you get, not what they do. If you would rather keep Gatekeeper
-involved, don't use these casks — download from upstream and click through
-**Open Anyway** yourself.
 
 ## Uninstall
 
