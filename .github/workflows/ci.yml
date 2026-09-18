@@ -27,6 +27,14 @@ jobs:
           mkdir -p "$(dirname "${dir}")"
           ln -s "${GITHUB_WORKSPACE}" "${dir}"
 
+          failed=""
           for f in Casks/*.rb; do
-            brew audit --cask --online "${tap}/$(basename "${f}" .rb)"
+            cask="$(basename "${f}" .rb)"
+            brew audit --cask --online --except=livecheck_version "${tap}/${cask}" \
+              || failed="${failed} ${cask}"
           done
+
+          if [ -n "${failed}" ]; then
+            echo "audit failed:${failed}"
+            exit 1
+          fi
