@@ -30,8 +30,7 @@ jobs:
           failed=""
           for f in Casks/*.rb; do
             cask="$(basename "${f}" .rb)"
-            brew audit --cask --online --except=livecheck_version "${tap}/${cask}" \
-              || failed="${failed} ${cask}"
+            brew audit --cask --online "${tap}/${cask}" || failed="${failed} ${cask}"
           done
 
           if [ -n "${failed}" ]; then
