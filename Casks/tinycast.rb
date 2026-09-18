@@ -1,6 +1,6 @@
 cask "tinycast" do
-  version "0.10.15"
-  sha256 "25e005c1d3078863f60caa67edd7a999ed3c603ffcf76ec6d240a8d6d88014a9"
+  version "0.10.23"
+  sha256 "3a1e824db9656a432a01e8e732468342c5fa30e709901855fa2a62a02706707b"
 
   url "https://github.com/abue-ammar/tinycast/releases/download/v#{version}/Tinycast-#{version}.dmg"
   name "Tinycast"
