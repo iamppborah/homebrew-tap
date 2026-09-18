@@ -13,8 +13,8 @@ Every cask here strips `com.apple.quarantine` in a `postflight_steps` stanza.
 macOS tags anything downloaded with that flag and Gatekeeper only checks files
 that carry it, so deleting it means the check never runs.
 
-These apps are ad-hoc or self-signed, so Gatekeeper's answer is a flat no. The
-point of stripping the flag is that the app opens on the first try — no
+Most of these apps are ad-hoc or self-signed, so Gatekeeper's answer is a flat
+no. The point of stripping the flag is that the app opens on the first try — no
 "damaged, move to Bin", no **Open Anyway** button to go hunting for, because
 there isn't one.
 
@@ -39,6 +39,7 @@ install.
 | `pomotroid` | [Splode/pomotroid](https://github.com/Splode/pomotroid) | Simple and visually-pleasing Pomodoro timer |
 | `r2` | [dickwu/r2](https://github.com/dickwu/r2) | Free open-source Cloudflare R2 desktop client and S3 GUI |
 | `tinycast` | [abue-ammar/tinycast](https://github.com/abue-ammar/tinycast) | Tiny, fully native macOS launcher, hotkeys, and clipboard history. |
+| `tokeneater` | [AThevon/TokenEater](https://github.com/AThevon/TokenEater) | macOS menu bar monitor for Claude AI usage limits |
 
 ## Uninstall
 

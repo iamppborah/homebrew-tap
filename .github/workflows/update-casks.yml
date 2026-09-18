@@ -25,6 +25,9 @@ jobs:
           - cask: tinycast
             repo: abue-ammar/tinycast
             asset: Tinycast-{version}.dmg
+          - cask: tokeneater
+            repo: AThevon/TokenEater
+            asset: TokenEater.dmg
 
     steps:
       - uses: actions/checkout@v7
