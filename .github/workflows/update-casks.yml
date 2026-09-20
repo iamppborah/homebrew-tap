@@ -30,19 +30,33 @@ jobs:
             asset: TokenEater.dmg
 
     steps:
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.TAP_BOT_APP_ID }}
+          private-key: ${{ secrets.TAP_BOT_PRIVATE_KEY }}
+
       - uses: actions/checkout@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Bump ${{ matrix.cask }}
         env:
           CASK: ${{ matrix.cask }}
           REPO: ${{ matrix.repo }}
           ASSET: ${{ matrix.asset }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Reading another repository's releases is outside the app's installation, so that one
+          # call keeps GITHUB_TOKEN. Everything touching this repository goes through gh, which
+          # reads GH_TOKEN first and falls back to GITHUB_TOKEN — so the app token has to be
+          # named GH_TOKEN.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          BOT: ${{ steps.app-token.outputs.app-slug }}[bot]
         run: |
           set -euo pipefail
           file="Casks/${CASK}.rb"
 
-          tag="$(curl -fsSL -H "Authorization: Bearer ${GH_TOKEN}" \
+          tag="$(curl -fsSL -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             "https://api.github.com/repos/${REPO}/releases/latest" | jq -r .tag_name)"
           version="${tag#v}"
           pinned="$(grep -m1 '^  version "' "${file}" | cut -d'"' -f2)"
@@ -62,8 +76,9 @@ jobs:
           sed -i "s|^  sha256 \".*\"|  sha256 \"${sha}\"|" "${file}"
           ruby -c "${file}"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          bot_id="$(gh api "/users/${BOT}" --jq .id)"
+          git config user.name "${BOT}"
+          git config user.email "${bot_id}+${BOT}@users.noreply.github.com"
           git switch -c "${branch}"
           git commit -am "${CASK} ${version}" \
             -m "${pinned} -> ${version} — https://github.com/${REPO}/releases/tag/${tag}"

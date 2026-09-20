@@ -14,6 +14,8 @@ jobs:
     runs-on: macos-latest
     env:
       HOMEBREW_NO_AUTO_UPDATE: "1"
+      # brew only picks up the token under the name HOMEBREW_GITHUB_API_TOKEN. Without it the
+      # audit calls the GitHub API anonymously, which runs out at 60 requests an hour.
       HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v7
