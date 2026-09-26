@@ -19,8 +19,12 @@ jobs:
       HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Audit every cask
+        env:
+          BEFORE: ${{ github.event.before }}
         run: |
           set -euo pipefail
 
@@ -29,10 +33,28 @@ jobs:
           mkdir -p "$(dirname "${dir}")"
           ln -s "${GITHUB_WORKSPACE}" "${dir}"
 
+          base=""
+          case "${GITHUB_EVENT_NAME}" in
+            pull_request) base="HEAD^1" ;;
+            push) base="${BEFORE}" ;;
+          esac
+          if [ -n "${base}" ] && ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
+            base=""
+          fi
+
+          changed=""
+          if [ -n "${base}" ]; then
+            changed="$(git diff --name-only "${base}" HEAD -- Casks/)"
+          fi
+
           failed=""
           for f in Casks/*.rb; do
             cask="$(basename "${f}" .rb)"
-            brew audit --cask --online "${tap}/${cask}" || failed="${failed} ${cask}"
+            except=""
+            if [ -n "${base}" ] && ! grep -qxF "${f}" <<<"${changed}"; then
+              except="--except=livecheck_version"
+            fi
+            brew audit --cask --online ${except} "${tap}/${cask}" || failed="${failed} ${cask}"
           done
 
           if [ -n "${failed}" ]; then
