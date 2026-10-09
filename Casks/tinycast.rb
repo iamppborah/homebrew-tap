@@ -5,7 +5,7 @@ cask "tinycast" do
   url "https://github.com/abue-ammar/tinycast/releases/download/v#{version}/Tinycast-#{version}.dmg"
   name "Tinycast"
   desc "Tiny, fully native launcher, hotkeys, and clipboard history"
-  homepage "https://abue-ammar.github.io/tinycast/"
+  homepage "https://github.com/abue-ammar/tinycast"
 
   livecheck do
     url :url
@@ -17,25 +17,13 @@ cask "tinycast" do
     "abue-ammar/tinycast/tinycast-sequoia",
     "abue-ammar/tinycast/tinycast-universal",
   ]
-  depends_on arch: :arm64
   depends_on macos: :tahoe
+  depends_on arch: :arm64
 
   app "Tinycast.app"
 
-  preflight_steps do
-    if_path_exists "Tinycast.app", base: :appdir do
-      touch ".upgrade"
-    end
-  end
-
   postflight_steps do
     run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/Tinycast.app"]
-
-    if_path_exists ".upgrade" do
-      run "/usr/bin/open", args: ["-g", "{{appdir}}/Tinycast.app"]
-    end
-
-    remove ".upgrade"
   end
 
   uninstall quit: "com.tinycast.app"
