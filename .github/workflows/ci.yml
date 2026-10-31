@@ -32,6 +32,7 @@ jobs:
           tap="${GITHUB_REPOSITORY%%/*}/${GITHUB_REPOSITORY##*/homebrew-}"
           mkdir -p "$(dirname "${dir}")"
           ln -s "${GITHUB_WORKSPACE}" "${dir}"
+          brew trust "${tap}"
 
           base=""
           case "${GITHUB_EVENT_NAME}" in
