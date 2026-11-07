@@ -1,6 +1,6 @@
 cask "r2" do
-  version "0.3.19"
-  sha256 "66639a4b1cc1581ae418b7cb777ed78301b3346a0d224c85b69b85a44121ebe2"
+  version "0.3.22"
+  sha256 "26baf78e475bf62d707acd1af8c25963974c3805cf8986cf5c63947d1b1c5e50"
 
   url "https://github.com/dickwu/r2/releases/download/v#{version}/r2_#{version}_aarch64.dmg"
   name "R2 Client"
